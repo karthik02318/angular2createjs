@@ -1,3 +1,6 @@
 /node_modules
 /bower_components
 /typings
+/development/**/*.js
+/development/**/*.js
+!/development/assets/*.js
