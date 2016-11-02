@@ -1,7 +1,7 @@
 /// <reference path="../../../tsdefnition/createjs/createjs.d.ts" />
 /// <reference path="../../../tsdefnition/assets/commonasset.d.ts" />
 
-import { Component,ViewChild, ElementRef } from '@angular/core';
+import { Component,ViewChild, Input, OnChanges, SimpleChange,  ElementRef } from '@angular/core';
 import CStage = require("../../creatjscontainer/Cstage");
 import {IafterDomLoaded} from "../../creatjscontainer/Istage";
 
@@ -9,22 +9,42 @@ import {IafterDomLoaded} from "../../creatjscontainer/Istage";
     selector: 'label-component',
     templateUrl: 'development/template/CanvasComponentTemplate.html'
 })
-export class LabelComponent extends CStage implements IafterDomLoaded {
-
+export class LabelComponent extends CStage implements IafterDomLoaded, OnChanges {
+    @Input() major: number;
+    @Input() minor: number;
+    
     @ViewChild("canvas") canvasElem: ElementRef;
     ngAfterViewInit() {
         this.init(<HTMLCanvasElement>this.canvasElem.nativeElement);
     }
+    
     constructor(){
         super();
         this.stageWidth = 500;
         this.stageHeight = 150;
         this.stageX = 400;
         this.stageY = 100;
+        var timer = setInterval(this.timerfun,100);
+    }
+    protected timerfun = (event): void => {        
+        this.major++;
     }
     public _confirmButton:any;
     public _clearButton:any;
-
+    ngOnChanges(changes: {[propKey: string]: SimpleChange}) {
+        let log: string[] = [];
+        for (let propName in changes) {
+            console.log(propName,changes);
+            if(propName == "major"){
+                this.test(<string>changes[propName].currentValue)
+            }
+        }
+    }
+    test(val:string){
+        if(!this.label1)return;
+        this.label1.text = val;
+        this.update(); 
+    }
     afterDomLoaded(){
         /*var label1 = new createjs.Text("text without hitArea", "48px Arial", "#8097BD");
         label1.x = label1.y = 10;
@@ -50,11 +70,12 @@ export class LabelComponent extends CStage implements IafterDomLoaded {
         this.cStage.addChild(label1, label2);
         this.cStage.update();
         createjs.Ticker.addEventListener("tick", this.cStage);*/
-        var rect = new createjs.Shape();
-        rect.graphics.beginFill("#82BFF2").drawRect(0, 0, 500, 150);
-        this.cStage.addChild(rect);
 
-
+        this.label1 = new createjs.Text(this.major.toString(), "48px Arial", "black");
+        this.label1.x = this.label1.y = 10;
+        this.rect = new createjs.Shape();
+        this.rect.graphics.beginFill("#82BFF2").drawRect(0, 0, 500, 150);
+        this.cStage.addChild(this.rect);
         this._confirmButton = new BetBarbuttonsDesign["confirmBtn"];
         this._confirmButton.gotoAndStop(0);
         this._confirmButton.x = 0;
@@ -66,10 +87,11 @@ export class LabelComponent extends CStage implements IafterDomLoaded {
         this._confirmButton.addEventListener("mousedown", this.buttonDownHandler);
         this.cStage.addChild(this._confirmButton);
         this.cStage.addChild(this._clearButton);
-        this.update();
-        createjs.Ticker.addEventListener("tick", this.cStage);
-
+        this.cStage.addChild(this.label1);        
+        this.update();    
     }
+    private label1:createjs.Text;
+    private rect = new createjs.Shape();
     private counter = 0;
     private _tweenEle;
     protected buttonDownHandler = (event): void => {

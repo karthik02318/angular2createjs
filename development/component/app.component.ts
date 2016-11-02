@@ -3,16 +3,17 @@ import { AppConfig } from '../appconfig/app.config';
 @Component({
     selector: 'my-app',
     template: `<div style="position: absolute;background-color:red" [ngStyle]="{'height': _containerHeight+'px','width':_containerWidth+'px','left':_containerLeft+'px','top':_containerTop+'px','transform':'scale('+ _containerScaleX +','+ _containerScaleY +')'}">
-<my-component></my-component>
+<my-component (childListener)="onchildcalled($event)"></my-component>
 <my-component2></my-component2>
 <betbar-button></betbar-button>
-<label-component *ngIf="_testTimer == true"></label-component>
+<label-component  [major]="major" [minor]="minor" *ngIf="_testTimer == true"></label-component>
+<div>{{minor}}</div>
 </div>`
 })
 
 export class AppComponent {
-    title = 'Tour of Heroes';
-    heroes = HEROES;
+    major: number = 25;
+    minor: number = 23;
     private _containerWidth:number;
     private _containerHeight:number;
     private _containerTop:number;
@@ -22,11 +23,15 @@ export class AppComponent {
     private _testTimer:boolean = true;
     constructor(){
         this.onResize();
-       // var timer = setInterval(this.timerfun,2000)
+        var timer = setInterval(this.timerfun,100);
+    }
+    onchildcalled(cnt: number) {
+        this.minor = cnt;
     }
     protected timerfun = (event): void => {
         console.log(this._testTimer);
-        this._testTimer = !this._testTimer;
+        //this._testTimer = !this._testTimer;
+        this.major++;
     }
     @HostListener('window:resize', ['$event'])
     onResize() {
@@ -83,20 +88,3 @@ export class AppComponent {
         this._containerScaleY = newGameScaleY;
     }
 }
-export class Hero {
-    id: number;
-    name: string;
-}
-
-const HEROES: Hero[] = [
-    { id: 11, name: 'Mr. Nice' },
-    { id: 12, name: 'Narco' },
-    { id: 13, name: 'Bombasto' },
-    { id: 14, name: 'Celeritas' },
-    { id: 15, name: 'Magneta' },
-    { id: 16, name: 'RubberMan' },
-    { id: 17, name: 'Dynama' },
-    { id: 18, name: 'Dr IQ' },
-    { id: 19, name: 'Magma' },
-    { id: 20, name: 'Tornado' }
-];

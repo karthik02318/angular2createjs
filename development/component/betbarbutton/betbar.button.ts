@@ -29,6 +29,7 @@ export class BetBarButton extends CStage implements IafterDomLoaded {
         this.cStage.addChild(rect);
 
         this._cashierButton = new BetBarbuttonsDesign["CashierButtonMC"];
+        this._cashierButton.gotoAndStop(0);
         this._cashierButton.x = 0;
         this._cashierButton.y = 0;
 

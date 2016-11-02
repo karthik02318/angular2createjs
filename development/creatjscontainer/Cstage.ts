@@ -20,6 +20,7 @@ class CStage extends createjs.Container implements Istage{
         this._stageContext = this._stageCanvas.getContext("2d");
         this.cStage = new createjs.Stage(stageCanvas);
         this.cStage.enableMouseOver(10);
+        createjs.Ticker.addEventListener("tick", this.cStage);
         this.afterDomLoaded();
     }
     afterDomLoaded(){
