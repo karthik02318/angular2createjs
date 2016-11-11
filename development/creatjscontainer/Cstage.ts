@@ -2,9 +2,10 @@
  * Created by karthik.ar on 10/27/2016.
  */
 /// <reference path="../../tsdefnition/createjs/createjs.d.ts" />
+import { OnChanges } from '@angular/core';
 import {Istage} from "../creatjscontainer/Istage";
 
-class CStage extends createjs.Container implements Istage{
+class CStage extends createjs.Container implements Istage, OnChanges{
     private _stageCanvas:HTMLCanvasElement;
     private _stageContext:CanvasRenderingContext2D;
     public cStage: createjs.Stage;
@@ -42,7 +43,18 @@ class CStage extends createjs.Container implements Istage{
     public update(){
         this.cStage.update();
     }
+    ngOnChanges(changes) {
+        console.log(changes);
+        for (let propName in changes) {
+            if(propName=="major"){
+                this.modelUpdate();
+            }
+        }
 
+    }
+    modelUpdate=():void =>{
+
+    }
 
 
 }
